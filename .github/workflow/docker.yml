@@ -1,0 +1,18 @@
+name: Docker build
+
+on:
+  
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker login
+      run: docker login docker.pkg.github.com -u $GITHUB_ACTOR -p $GITHUB_TOKEN
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Build docker container
+      run: docker build -f docker/conduit.Dockerfile -t "docker.pkg.github.com/$GITHUB_REPOSITORY/conduit:latest" .
+    - name: Publish docker container
+      run: docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/conduit:latest"
