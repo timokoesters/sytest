@@ -1,7 +1,11 @@
 name: Docker build
 
 on:
-  
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
 jobs:
   build:
     runs-on: ubuntu-18.04
@@ -13,6 +17,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Build docker container
-      run: docker build -f docker/conduit.Dockerfile -t "docker.pkg.github.com/$GITHUB_REPOSITORY/conduit:latest" .
+      run: docker build -f docker/conduit.Dockerfile -t "docker.pkg.github.com/$GITHUB_REPOSITORY/sytest-conduit:latest" .
     - name: Publish docker container
-      run: docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/conduit:latest"
+      run: docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/sytest-conduit:latest"
