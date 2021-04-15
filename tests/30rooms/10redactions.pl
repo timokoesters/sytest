@@ -36,8 +36,8 @@ sub matrix_redact_event
    my $esc_event_id = uri_escape( $event_id );
 
    do_request_json_for( $user,
-      method => "POST",
-      uri    => "/r0/rooms/$room_id/redact/$esc_event_id",
+      method => "PUT",
+      uri    => "/r0/rooms/$room_id/redact/9283",
       content => \%params,
    )->then( sub {
       my ( $body ) = @_;
@@ -87,7 +87,7 @@ sub matrix_redact_event_synced
 
 push @EXPORT, qw( matrix_redact_event_synced );
 
-test "POST /rooms/:room_id/redact/:event_id as power user redacts message",
+test "PUT /rooms/:room_id/redact/:event_id/:txn_id as power user redacts message",
    requires => [ local_user_fixtures( 2 ),
                  qw( can_send_message )],
 
@@ -102,13 +102,13 @@ test "POST /rooms/:room_id/redact/:event_id as power user redacts message",
 
          do_request_json_for( $creator,
             method => "POST",
-            uri    => "/r0/rooms/$room_id/redact/$to_redact",
+            uri    => "/r0/rooms/$room_id/redact/$to_redact/72183",
             content => {},
          );
       });
    };
 
-test "POST /rooms/:room_id/redact/:event_id as original message sender redacts message",
+test "PUT /rooms/:room_id/redact/:event_id/:txn_id as original message sender redacts message",
    requires => [ local_user_fixtures( 2 ),
                  qw( can_send_message )],
 
@@ -123,13 +123,13 @@ test "POST /rooms/:room_id/redact/:event_id as original message sender redacts m
 
          do_request_json_for( $sender,
                method => "POST",
-               uri    => "/r0/rooms/$room_id/redact/$to_redact",
+               uri    => "/r0/rooms/$room_id/redact/$to_redact/23499",
                content => {},
          );
       });
    };
 
-test "POST /rooms/:room_id/redact/:event_id as random user does not redact message",
+test "PUT /rooms/:room_id/redact/:event_id/:txn_id as random user does not redact message",
    requires => [ local_user_fixtures( 3 ),
                  qw( can_send_message )],
 
@@ -144,13 +144,13 @@ test "POST /rooms/:room_id/redact/:event_id as random user does not redact messa
 
          do_request_json_for( $redactor,
                method => "POST",
-               uri    => "/r0/rooms/$room_id/redact/$to_redact",
+               uri    => "/r0/rooms/$room_id/redact/$to_redact/12398",
                content => {},
          )->main::expect_http_403;
       });
    };
 
-test "POST /redact disallows redaction of event in different room",
+test "PUT /redact disallows redaction of event in different room",
    requires => [ local_user_and_room_fixtures(), local_user_and_room_fixtures() ],
 
    do => sub {

@@ -1,3 +1,5 @@
+my $global_txn_id = 0;
+
 test "POST /rooms/:room_id/send/:event_type sends a message",
    requires => [ local_user_and_room_fixtures() ],
 
@@ -26,7 +28,7 @@ test "PUT /rooms/:room_id/send/:event_type/:txn_id sends a message",
 
    do => sub {
       my ( $user, $room_id ) = @_;
-      my $txn_id = "1234";
+      my $txn_id = $global_txn_id++;
 
       do_request_json_for( $user,
          method => "PUT",
@@ -75,8 +77,6 @@ test "PUT /rooms/:room_id/send/:event_type/:txn_id deduplicates the same txn id"
          Future->done(1);
       });
    };
-
-my $global_txn_id = 0;
 
 push our @EXPORT, qw( matrix_send_room_message matrix_send_room_text_message );
 

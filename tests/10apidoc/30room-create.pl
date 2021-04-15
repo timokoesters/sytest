@@ -21,7 +21,7 @@ test "POST /createRoom makes a public room",
       )->then( sub {
          my ( $body ) = @_;
 
-         assert_json_keys( $body, qw( room_id room_alias ));
+         assert_json_keys( $body, qw( room_id ));
          assert_json_nonempty_string( $body->{room_id} );
 
          Future->done(1);
@@ -434,13 +434,18 @@ sub matrix_create_room_synced
    matrix_create_room( $user, %params )->then( sub {
       my ( $room_id ) = @_;
 
+      # Choose a random starting point so we don't reuse txnids
+      # TODO: A global txnid counter would be better
+      my $txn_id = int(rand(100000));
+
       matrix_do_and_wait_for_sync( $user,
          do => sub {
-            my $uri = "/r0/rooms/$room_id/send/m.room.test";
+            my $uri = "/r0/rooms/$room_id/send/m.room.test/$txn_id";
+            $txn_id += 1;
 
             do_request_json_for(
                $user,
-               method => "POST",
+               method => "PUT",
                uri    => $uri,
                content => {},
             );

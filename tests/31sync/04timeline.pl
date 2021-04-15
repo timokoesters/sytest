@@ -32,7 +32,7 @@ test "Can sync a room with a single message",
          my ( $body ) = @_;
 
          my $room = $body->{rooms}{join}{$room_id};
-         assert_json_keys( $room, qw( timeline state ephemeral ));
+         assert_json_keys( $room, qw( timeline state ));
          assert_json_keys( $room->{timeline}, qw( events limited prev_batch ));
          @{ $room->{timeline}{events} } == 2
             or die "Expected two timeline events";
@@ -87,7 +87,7 @@ test "Can sync a room with a message with a transaction id",
          my ( $body ) = @_;
 
          my $room = $body->{rooms}{join}{$room_id};
-         assert_json_keys( $room, qw( timeline state ephemeral ));
+         assert_json_keys( $room, qw( timeline state ));
          assert_json_keys( $room->{timeline}, qw( events limited prev_batch ));
          @{ $room->{timeline}{events} } == 1
             or die "Expected only one timeline event";
@@ -148,7 +148,7 @@ test "A message sent after an initial sync appears in the timeline of an increme
          log_if_fail "Sync response", $body;
 
          my $room = $body->{rooms}{join}{$room_id};
-         assert_json_keys( $room, qw( timeline state ephemeral ));
+         assert_json_keys( $room, qw( timeline ));
          assert_json_keys( $room->{state}, qw( events ));
          assert_json_keys( $room->{timeline}, qw( events limited prev_batch ));
          assert_json_empty_list( $room->{state}{events} );
@@ -206,7 +206,7 @@ test "A filtered timeline reaches its limit",
          my ( $body ) = @_;
 
          my $room = $body->{rooms}{join}{$room_id};
-         assert_json_keys( $room, qw( timeline state ephemeral ));
+         assert_json_keys( $room, qw( timeline state ));
          assert_json_keys( $room->{state}, qw( events ));
          assert_json_keys( $room->{timeline}, qw( events limited prev_batch ));
          assert_json_empty_list( $room->{state}{events} );
@@ -247,7 +247,7 @@ test "Syncing a new room with a large timeline limit isn't limited",
          my ( $body ) = @_;
 
          my $room = $body->{rooms}{join}{$room_id};
-         assert_json_keys( $room, qw( timeline state ephemeral ));
+         assert_json_keys( $room, qw( timeline state ));
          assert_json_keys( $room->{state}, qw( events ));
          assert_json_keys( $room->{timeline}, qw( events limited prev_batch ));
          (not $room->{timeline}{limited})
@@ -297,7 +297,7 @@ test "A full_state incremental update returns only recent timeline",
          my ( $body ) = @_;
 
          my $room = $body->{rooms}{join}{$room_id};
-         assert_json_keys( $room, qw( timeline state ephemeral ));
+         assert_json_keys( $room, qw( timeline ));
 
          @{ $room->{timeline}{events} } == 1
              or die "Expected only one timeline event";
@@ -343,7 +343,7 @@ test "A prev_batch token can be used in the v1 messages API",
          my ( $body ) = @_;
 
          my $room = $body->{rooms}{join}{$room_id};
-         assert_json_keys( $room, qw( timeline state ephemeral ));
+         assert_json_keys( $room, qw( timeline ));
          assert_json_keys( $room->{state}, qw( events ));
          assert_json_keys( $room->{timeline}, qw( events limited prev_batch ));
          @{ $room->{timeline}{events} } == 1

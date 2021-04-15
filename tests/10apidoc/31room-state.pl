@@ -125,9 +125,6 @@ test "GET /rooms/:room_id/joined_members fetches my membership",
 
          my $myself = $members->{ $user->user_id };
 
-         # We always have these keys even if they're undef
-         assert_json_keys( $myself, qw( display_name avatar_url ));
-
          Future->done(1);
       });
    };
